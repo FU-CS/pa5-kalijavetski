@@ -3,6 +3,8 @@
  */
 package pa5;
 
+import org.checkerframework.checker.guieffect.qual.SafeType;
+
 /**
  *  Interface for a binary tree implemented using an array
 *   The tree must adhere to the properties of a complete binary tree: 
@@ -17,7 +19,6 @@ interface ArrayBasedBinaryTree {
      * Assume `element` is always a positive integer
      */
     void insert(int element);
-
     /**
      * Returns the tree in level order
      */
@@ -51,9 +52,117 @@ interface ArrayBasedBinaryTree {
 }
 
 // // Uncomment the following code to implement the BinaryTreeArray class
-// public class BinaryTreeArray implements ArrayBasedBinaryTree{
+public class BinaryTreeArray implements ArrayBasedBinaryTree{
+    int[] data;
+    int size;
+    int maxcap;
 
-//     public static void main(String[] args){
+    public BinaryTreeArray(int max){
+        this.data = new int[max];
+        this.size = 0;
+        this.maxcap = max;
+    }
 
-//     }   
-// }
+    public void insert(int element){
+        if (this.size<this.maxcap){
+        this.data[this.size] = element;
+        this.size = this.size + 1;
+        }
+    }
+
+    public String levelOrder(){
+        String level_string = "";
+        if (this.size == 0){
+            return "";
+        }
+        else{
+        for (int i=0; i < this.size-1; i++){
+            level_string = level_string + this.data[i] + " ";
+        }
+        level_string = level_string + this.data[this.size-1];
+        return level_string;
+        }
+    }
+
+    public String inOrder(){
+        return inOrderHelper(0).trim();
+    }
+
+    private String inOrderHelper(int index){
+        String result =  "";
+        if (index >= this.size){
+            return "";
+        }
+        String left = inOrderHelper((2*index)+1);
+        String right = inOrderHelper((2*index)+2);
+        result = left + this.data[index] + " " + right;
+        return result;
+    }
+
+    public String preOrder(){
+        return preOrderHelper(0).trim();
+    }
+
+    private String preOrderHelper(int index){
+        String result =  "";
+        if (index >= this.size){
+            return "";
+        }
+        String left = preOrderHelper((2*index)+1);
+        String right = preOrderHelper((2*index)+2);
+        result = this.data[index] + " " + left + right;
+        return result;
+    }
+
+    public String postOrder(){
+        return postOrderHelper(0).trim();
+    }
+
+    private String postOrderHelper(int index){
+        String result =  "";
+        if (index >= this.size){
+            return "";
+        }
+        String left = postOrderHelper((2*index)+1);
+        String right = postOrderHelper((2*index)+2);
+        result = left + right + this.data[index] + " ";
+        return result;
+    }
+
+    public int longestPath(){
+        int left = longestPathHelper(0, 0);
+        int right = longestPathHelper(0, 0);
+        int path = left + right;
+        return path;
+    }
+
+    private int longestPathHelper(int index, int depth){
+        if (index >= this.size){
+            return depth-1;
+        }
+        int left = longestPathHelper((2*index)+1, depth+1);
+        return left;
+    }
+
+    public void delete(int element){
+        int index = 0;
+        int del_index = 0;
+        boolean found = false;
+
+        while (index < this.size){
+            if (this.data[index]==element){
+                del_index = index;
+                found = true;
+                this.size = this.size - 1;
+                break;
+            }
+            index = index + 1;
+        }
+        for (int i = del_index; i < this.size && (found==true); i++){
+            this.data[i] = this.data[i+1];
+        }
+    }
+
+    public static void main(String[] args){
+    }   
+}
